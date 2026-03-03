@@ -11,7 +11,6 @@ config = dotenv_values(".env")
 app = FastAPI()
 
 origins = [
-	config.get("STATE_VAULT_HOST"),
 	config.get("WILD_WAGS_HOST"),
 ]
 
