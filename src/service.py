@@ -1,4 +1,6 @@
 import httpx
+import ssl
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,7 +34,7 @@ async def increase_stat(request: Request):
 	if not encrypted_state or not stat:
 		return JSONResponse(status_code=400, content={"error": "Invalid request"})
 	
-	async with httpx.AsyncClient() as client:
+	async with httpx.AsyncClient(verify="certificate.pem") as client:
 		if not auth:
 				decrypt_res = await client.get(f"{config.get('STATE_VAULT_HOST')}/decrypt", params={"state": encrypted_state})
 		else:
@@ -78,7 +80,7 @@ async def stats_decay(request: Request):
 		return JSONResponse(status_code=400, content={"error": "Invalid request"})
 	
 	
-	async with httpx.AsyncClient() as client:
+	async with httpx.AsyncClient(verify="certificate.pem") as client:
 		if not auth:
 				decrypt_res = await client.get(f"{config.get('STATE_VAULT_HOST')}/decrypt", params={"state": encrypted_state})
 		else:
@@ -124,5 +126,16 @@ async def stats_decay(request: Request):
 
 
 def main():
-	print("\nStats Microservice running in:\n")
-	print(f"https://localhost:{config.get('PORT')}")
+	print("\nStats Microservice running on", f"https://localhost:{config.get('PORT')}")
+	uvicorn.run(
+		"src.service:app",
+		host="127.0.0.1",
+		port=int(config.get('PORT')),
+		reload=True,
+		ssl_certfile="certificate.pem",
+		ssl_keyfile="private-key.pem",
+		log_level="warning"
+		)
+
+if __name__ == "__main__":
+	main()
