@@ -15,12 +15,12 @@ def increase_stat(stat):
 @app.post("/stats-decay")
 async def stats_decay(request):
 	body = await request.json()
+	encrypted_state = body.get("state")
 	auth = request.headers.get("Authorization")
 
-	if not body:
+	if not encrypted_state:
 		return JSONResponse(status_code=400, content={"error": "Invalid request"})
 	
-	encrypted_state = body.get("state")
 	
 	if not auth:
 		async with httpx.AsyncClient() as client:
