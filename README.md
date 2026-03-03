@@ -83,7 +83,7 @@ Content-Type: application/json
 - Successful response HTTP 200 returns the updated encrypted string and the raw data for UI updates
 ```
 {
-  "encrypted": "cipher:nonce:tag",
+  "encrypted": "some:encrypted:string",
   "data": { "pet": { "moodMeter": { "hunger": 75, ... } } },
   "quantity": 25
 }
