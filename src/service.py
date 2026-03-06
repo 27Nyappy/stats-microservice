@@ -140,7 +140,6 @@ def main():
 		reload=True,
 		ssl_certfile="certificate.pem",
 		ssl_keyfile="private-key.pem",
-		log_level="warning"
 		)
 
 if __name__ == "__main__":
